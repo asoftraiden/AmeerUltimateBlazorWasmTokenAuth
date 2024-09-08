@@ -28,13 +28,19 @@
                     <ValidationMessage For="@(()=> credentials.password)" />
                     <br />
                 </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm">
-                    Submit 
-                    @if (isLoading)
+                <div class="d-flex align-items-center">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                        Submit
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        }
+                    </button>
+                    @if (errorMessage is not null)
                     {
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <p class="text-danger ms-3 mb-0">@errorMessage</p>
                     }
-                </button>
+                </div>
             </EditForm>
         </div>
     </div>
@@ -69,6 +75,7 @@
         {
 
             isLoading = false;
+
         }
     }
 }
