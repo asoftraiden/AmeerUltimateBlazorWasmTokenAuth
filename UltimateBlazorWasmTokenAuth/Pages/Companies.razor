@@ -1,0 +1,62 @@
+﻿@page "/companies"
+@inject HttpClient Http
+@using System.Net.Http.Headers
+@using Microsoft.AspNetCore.Authorization
+@using UltimateBlazorWasmTokenAuth.DataTransferObjects
+@using UltimateBlazorWasmTokenAuth.Helper
+@inject TokenAuthenticationStateProvider TokenProvider
+@attribute [Authorize]
+
+<PageTitle>Companies</PageTitle>
+
+<h1>Companies</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (companies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in companies)
+            {
+                <tr>
+                    <td>@forecast.Id</td>
+                    <td>@forecast.Name</td>
+                    <td>@forecast.FullAddress</td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private CompanyDto[]? companies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenProvider.GetTokenAsync();
+        if (token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //Http.DefaultRequestHeaders.Accept.Clear(); // Clears any existing Accept headers to ensure no conflicts
+            Http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Sets Accept header to application/json
+
+            companies = await Http.GetFromJsonAsync<CompanyDto[]>("https://amqms.site/api/companies");
+        }
+    }
+
+    
+}
