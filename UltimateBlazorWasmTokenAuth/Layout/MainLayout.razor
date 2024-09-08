@@ -11,10 +11,17 @@
     <main>
         <div class="top-row px-4">
             <AuthorizeView>
+                <Authorized>
                 Logged in as @context.User.Identity.Name &nbsp;&nbsp;
                 @* <button class="btn btn-sm btn-outline-dark" @onclick="@(() => TokenProvider.SetTokenAsync(null))">Logout</button> *@
                 <button class="btn btn-sm btn-outline-dark" @onclick="@(() => AuthenticationService.LogoutAsync())">Logout</button>
+				</Authorized>
+                <NotAuthorized>
+                    <p> Not authorized</p>
+                </NotAuthorized>
+                
             </AuthorizeView>
+            
         </div>
 
         <article class="content px-4">

@@ -31,7 +31,6 @@ builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.Get
 
 builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
 builder.Services.AddSingleton<IRepositoryManager, RepositoryManager>();
-//builder.Services.AddSingleton<ICompanyRepository, CompanyRepository>();
 
 //builder.Services.AddBlazoredSessionStorageAsSingleton();
 builder.Services.AddBlazoredLocalStorageAsSingleton();
