@@ -8,7 +8,7 @@ public interface IAuthenticationService
 
     Task AnnounceLoginStatus();
     ValueTask<string> GetJwtAsync();
-    Task<DateTime> LoginAsync(Login model);
+    Task<DateTime> LoginAsync(LoginCreds model);
     Task LogoutAsync();
     Task<bool> RefreshAsync();
 }

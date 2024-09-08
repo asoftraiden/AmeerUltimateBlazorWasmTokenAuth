@@ -2,7 +2,7 @@
 
 namespace UltimateBlazorWasmTokenAuth.Model;
 
-public class Login
+public class LoginCreds
 {
     [Required]
     public string? username { get; set; }

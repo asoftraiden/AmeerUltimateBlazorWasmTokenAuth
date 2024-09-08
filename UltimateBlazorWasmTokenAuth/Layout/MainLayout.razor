@@ -1,8 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
-@using Microsoft.AspNetCore.Components.Authorization
-@using UltimateBlazorWasmTokenAuth.Helper
 @inject TokenAuthenticationStateProvider TokenProvider
+@inject IAuthenticationService AuthenticationService;
 
 <div class="page">
     <div class="sidebar">
@@ -12,8 +11,9 @@
     <main>
         <div class="top-row px-4">
             <AuthorizeView>
-                Logged in as @context.User.Identity.Name
-                <button class="btn btn-sm btn-outline-dark" @onclick="@(() => TokenProvider.SetTokenAsync(null))">Logout</button>
+                Logged in as @context.User.Identity.Name &nbsp;&nbsp;
+                @* <button class="btn btn-sm btn-outline-dark" @onclick="@(() => TokenProvider.SetTokenAsync(null))">Logout</button> *@
+                <button class="btn btn-sm btn-outline-dark" @onclick="@(() => AuthenticationService.LogoutAsync())">Logout</button>
             </AuthorizeView>
         </div>
 

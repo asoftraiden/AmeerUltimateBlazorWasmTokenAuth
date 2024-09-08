@@ -46,7 +46,7 @@ public class AuthenticationService : IAuthenticationService
         //await _sessionStorageService.RemoveItemAsync(EXP_KEY);
 
         _jwtCache = null;
-
+        await _authStateProvider.SetTokenAsync(null);
         // await Console.Out.WriteLineAsync($"Revoke gave response {response.StatusCode}");
 
         LoginChange?.Invoke(null);
@@ -78,7 +78,7 @@ public class AuthenticationService : IAuthenticationService
         return jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value;
     }
 
-    public async Task<DateTime> LoginAsync(Login model)
+    public async Task<DateTime> LoginAsync(LoginCreds model)
     {
 
         var jsonContent = JsonContent.Create(model);
@@ -130,7 +130,7 @@ public class AuthenticationService : IAuthenticationService
         await _sessionStorageService.SetItemAsync(JWT_KEY, content.accessToken);
         await _sessionStorageService.SetItemAsync(REFRESH_KEY, content.refreshToken);
         //await _sessionStorageService.SetItemAsync(EXP_KEY, content.Expiration);
-
+        await _authStateProvider.SetTokenAsync(content.accessToken, content.Expiration);
         _jwtCache = content.accessToken;
 
         return true;

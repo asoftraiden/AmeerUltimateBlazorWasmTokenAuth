@@ -1,8 +1,5 @@
 ﻿@page "/login"
-@using UltimateBlazorWasmTokenAuth.Contracts
-@using UltimateBlazorWasmTokenAuth.Helper
-@using UltimateBlazorWasmTokenAuth.Model
-@using UltimateBlazorWasmTokenAuth.Services
+
 @inject HttpClient Http
 @inject TokenAuthenticationStateProvider AuthStateProvider
 @inject IAuthenticationService AuthenticationService;
@@ -21,7 +18,7 @@
                 <DataAnnotationsValidator />
 
                 <div class="form-group">
-                    <label>Email address</label>
+                    <label>Username</label>
                     <InputText class="form-control" @bind-Value="credentials.username" />
                     <ValidationMessage For="@(()=> credentials.username)" />
                 </div>
@@ -29,8 +26,15 @@
                     <label>Password</label>
                     <InputText type="password" class="form-control" @bind-Value="credentials.password" />
                     <ValidationMessage For="@(()=> credentials.password)" />
+                    <br />
                 </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    Submit 
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    }
+                </button>
             </EditForm>
         </div>
     </div>
@@ -38,14 +42,12 @@
 
 @code {
 
-   
+
     private DateTime? expiration;
     private string? errorMessage;
-    private bool isLoggedIn = false;
-
-
-
-    UltimateBlazorWasmTokenAuth.Model.Login credentials = new UltimateBlazorWasmTokenAuth.Model.Login();
+    private bool isLoading = false;
+    
+    UltimateBlazorWasmTokenAuth.Model.LoginCreds credentials = new UltimateBlazorWasmTokenAuth.Model.LoginCreds();
     bool loginFailure;
     EditForm loginform { get; set; }
 
@@ -54,8 +56,8 @@
 
         try
         {
+            isLoading = true;
             expiration = await AuthenticationService.LoginAsync(credentials);
-            isLoggedIn = true;
             errorMessage = null;
         }
         catch (Exception ex)
@@ -63,13 +65,10 @@
             expiration = null;
             errorMessage = ex.Message;
         }
+        finally
+        {
 
-        // var response = await Http.PostAsJsonAsync("https://amqms.site/api/authentication/login", credentials);
-        // var result = await response.Content.ReadFromJsonAsync<LoginResult>();
-        // loginFailure = result?.accessToken == null;
-        // if (!loginFailure)
-        // {
-        //     await AuthStateProvider.SetTokenAsync(result.accessToken, result.Expiration);
-        // }
+            isLoading = false;
+        }
     }
 }
