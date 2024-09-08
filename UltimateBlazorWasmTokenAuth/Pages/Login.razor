@@ -1,8 +1,12 @@
 ﻿@page "/login"
+@using UltimateBlazorWasmTokenAuth.Contracts
 @using UltimateBlazorWasmTokenAuth.Helper
 @using UltimateBlazorWasmTokenAuth.Model
+@using UltimateBlazorWasmTokenAuth.Services
 @inject HttpClient Http
 @inject TokenAuthenticationStateProvider AuthStateProvider
+@inject IAuthenticationService AuthenticationService;
+
 @inject ILogger<Login> Logger
 
 <div class="container col-6">
@@ -33,18 +37,39 @@
 </div>
 
 @code {
+
+   
+    private DateTime? expiration;
+    private string? errorMessage;
+    private bool isLoggedIn = false;
+
+
+
     UltimateBlazorWasmTokenAuth.Model.Login credentials = new UltimateBlazorWasmTokenAuth.Model.Login();
     bool loginFailure;
     EditForm loginform { get; set; }
 
     async Task SubmitCredentials()
     {
-        var response = await Http.PostAsJsonAsync("https://amqms.site/api/authentication/login", credentials);
-        var result = await response.Content.ReadFromJsonAsync<LoginResult>();
-        loginFailure = result?.accessToken == null;
-        if (!loginFailure)
+
+        try
         {
-            await AuthStateProvider.SetTokenAsync(result.accessToken, result.Expiration);
+            expiration = await AuthenticationService.LoginAsync(credentials);
+            isLoggedIn = true;
+            errorMessage = null;
         }
+        catch (Exception ex)
+        {
+            expiration = null;
+            errorMessage = ex.Message;
+        }
+
+        // var response = await Http.PostAsJsonAsync("https://amqms.site/api/authentication/login", credentials);
+        // var result = await response.Content.ReadFromJsonAsync<LoginResult>();
+        // loginFailure = result?.accessToken == null;
+        // if (!loginFailure)
+        // {
+        //     await AuthStateProvider.SetTokenAsync(result.accessToken, result.Expiration);
+        // }
     }
 }

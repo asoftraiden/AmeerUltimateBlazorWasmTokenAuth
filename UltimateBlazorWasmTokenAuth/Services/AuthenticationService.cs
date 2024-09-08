@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using UltimateBlazorWasmTokenAuth.Contracts;
+using UltimateBlazorWasmTokenAuth.Helper;
 using UltimateBlazorWasmTokenAuth.Model;
 
 namespace UltimateBlazorWasmTokenAuth.Services;
@@ -12,7 +13,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IHttpClientFactory _factory;
     //private ISessionStorageService _sessionStorageService;
     private ILocalStorageService _sessionStorageService;
-
+    private readonly TokenAuthenticationStateProvider _authStateProvider;
     private const string JWT_KEY = nameof(JWT_KEY);
     private const string REFRESH_KEY = nameof(REFRESH_KEY);
     //private const string EXP_KEY = nameof(EXP_KEY);
@@ -21,10 +22,11 @@ public class AuthenticationService : IAuthenticationService
 
     public event Action<string?>? LoginChange;
 
-    public AuthenticationService(IHttpClientFactory factory, ILocalStorageService sessionStorageService)
+    public AuthenticationService(IHttpClientFactory factory, ILocalStorageService sessionStorageService, TokenAuthenticationStateProvider authStateProvider)
     {
         _factory = factory;
         _sessionStorageService = sessionStorageService;
+        _authStateProvider = authStateProvider;
     }
 
     public async ValueTask<string> GetJwtAsync()
@@ -96,7 +98,7 @@ public class AuthenticationService : IAuthenticationService
         await _sessionStorageService.SetItemAsync(JWT_KEY, content.accessToken);
         await _sessionStorageService.SetItemAsync(REFRESH_KEY, content.refreshToken);
         //await _sessionStorageService.SetItemAsync(EXP_KEY, content.Expiration);
-
+        await _authStateProvider.SetTokenAsync(content.accessToken, content.Expiration);
         LoginChange?.Invoke(GetUsername(content.accessToken));
 
         return content.Expiration;

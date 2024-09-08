@@ -2,9 +2,14 @@
 @inject HttpClient Http
 @using System.Net.Http.Headers
 @using Microsoft.AspNetCore.Authorization
+@using UltimateBlazorWasmTokenAuth.Contracts
 @using UltimateBlazorWasmTokenAuth.DataTransferObjects
 @using UltimateBlazorWasmTokenAuth.Helper
+@using UltimateBlazorWasmTokenAuth.Services
 @inject TokenAuthenticationStateProvider TokenProvider
+@inject IAuthenticationService AuthenticationService;
+@inject IRepositoryManager repositoryManager
+
 @attribute [Authorize]
 
 <PageTitle>Companies</PageTitle>
@@ -16,16 +21,17 @@
 @if (companies == null)
 {
     <p><em>Loading...</em></p>
+    <p><em>@errorMessage</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
             </tr>
         </thead>
         <tbody>
@@ -43,20 +49,66 @@ else
 }
 
 @code {
-    private CompanyDto[]? companies;
+
+    private List<CompanyDto>? companies;
+    private HttpResponseMessage? message;
+    private string errorMessage = "No Errors";
+    private bool isLoading = false;
+
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await TokenProvider.GetTokenAsync();
-        if (token != null)
-        {
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //Http.DefaultRequestHeaders.Accept.Clear(); // Clears any existing Accept headers to ensure no conflicts
-            Http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Sets Accept header to application/json
+        isLoading = true;
 
-            companies = await Http.GetFromJsonAsync<CompanyDto[]>("https://amqms.site/api/companies");
+        try
+        {
+            (message, companies) = await repositoryManager.Company.GetCompaniesAsync();
+
+            if (!message.IsSuccessStatusCode)
+            {
+                errorMessage = $"Error occurred: {message.ReasonPhrase} (Status code: {message.StatusCode})";
+                companies = null; // Ensure UI knows to show error message
+            }
+
+
         }
+        catch (Exception ex)
+        {
+
+            errorMessage = ex.Message;
+            companies = null;
+        }
+        finally
+        {
+            isLoading = false;    
+        }
+
+        
     }
+
+
+
+
+
+
+
+
+
+
+    // private CompanyDto[]? companies;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var token = await TokenProvider.GetTokenAsync();
+    //     if (token != null)
+    //     {
+    //         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    //         //Http.DefaultRequestHeaders.Accept.Clear(); // Clears any existing Accept headers to ensure no conflicts
+    //         Http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Sets Accept header to application/json
+
+    //         companies = await Http.GetFromJsonAsync<CompanyDto[]>("https://amqms.site/api/companies");
+    //     }
+    // }
 
     
 }
