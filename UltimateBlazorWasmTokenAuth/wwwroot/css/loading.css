@@ -1,0 +1,35 @@
+﻿/* css/loading.css */
+
+/* Loading Screen Styles */
+.loading-screen {
+    background-color: #121212; /* Dark background */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999; /* Ensure it's on top */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .loading-screen .loader {
+        border: 8px solid #282c34; /* Dark grey */
+        border-top: 8px solid #61dafb; /* Accent color */
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1.5s linear infinite;
+    }
+
+/* Animation Keyframes */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

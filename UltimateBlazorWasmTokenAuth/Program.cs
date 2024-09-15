@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 using UltimateBlazorWasmTokenAuth;
 using UltimateBlazorWasmTokenAuth.Contracts;
 using UltimateBlazorWasmTokenAuth.Handlers;
@@ -36,6 +37,6 @@ builder.Services.AddSingleton<IRepositoryManager, RepositoryManager>();
 builder.Services.AddBlazoredLocalStorageAsSingleton();
 
 
-
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();
