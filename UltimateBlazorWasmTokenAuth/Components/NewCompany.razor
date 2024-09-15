@@ -1,93 +1,36 @@
-﻿@inject IRepositoryManager repositoryManager
+﻿@inject IDialogService DialogService
 
-
-<!-- Button to Open Modal -->
-<button class="btn btn-primary" @onclick="() => showModal = true">New</button>
-
-<!-- Modal -->
-@if (showModal)
-{
-    <div class="modal fade show" tabindex="-1" style="display: block;" aria-modal="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Company</h5>
-                    <button type="button" class="btn-close" @onclick="() => showModal = false" />
-                </div>
-                <div class="modal-body">
-                    <EditForm Model="newCompany">
-                        <div class="mb-3">
-                            <InputText @bind-Value="newCompany.Name" class="form-control" placeholder="Name" />
-                        </div>
-                        <div class="mb-3">
-                            <InputText @bind-Value="newCompany.Country" class="form-control" placeholder="Country" />
-                        </div>
-                        <div class="mb-3">
-                            <InputText @bind-Value="newCompany.Address" class="form-control" placeholder="Address" />
-                        </div>
-                    </EditForm>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="() => showModal = false">Close</button>
-                    <button class="btn btn-primary" @onclick="HandleValidSubmit">
-                        Save
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        }
-                    </button>
-                    @if (errorMessage is not null)
-                    {
-                        <p class="text-danger ms-3 mb-0">@errorMessage</p>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-backdrop fade show"></div>
-}
-
-
-
-
-
-
-
-
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@newCompany" @ref="form">
+            <MudTextField @bind-Value="newCompany.Name" Label="Name" Required="true" RequiredError="Name is required!" />
+            <MudTextField @bind-Value="newCompany.Country" Label="Country" Required="true" RequiredError="Country is required!" />
+            <MudTextField @bind-Value="newCompany.Address" Label="Address" Required="true" RequiredError="Address is required!" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
     private CompanyForCreationDto newCompany = new();
-    private bool showModal = false;
-    private bool isLoading = false;
-    private HttpResponseMessage? message;
-    private string errorMessage = "No Errors";
-    private CompanyDto? createdCompany;
-    public void Show()
+    private MudForm form;
+
+    private void Cancel()
     {
-        newCompany = new();
-        showModal = true;
+        MudDialog.Cancel();
     }
 
-    public void Close()
+    private async Task Submit()
     {
-        showModal = false;
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        try
+        await form.Validate();
+        if (form.IsValid)
         {
-            isLoading = true;
-            (message, createdCompany) = await repositoryManager.Company.CreateCompanyAsync(newCompany);
-            Close();
-        }
-        catch (Exception ex)
-        {
-            errorMessage = ex.Message;
-        }
-        finally
-        {
-            isLoading = false;
+            MudDialog.Close(DialogResult.Ok(newCompany));
         }
     }
 }

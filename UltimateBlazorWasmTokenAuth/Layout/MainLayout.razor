@@ -16,15 +16,21 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudText Typo="Typo.h5" Class="ml-3">QMS Placeholder</MudText>
+        <MudText Typo="Typo.h5" Class="ml-3">QMS Systems</MudText>
 
         <AuthorizeView>
             <Authorized>
+                <MudSpacer />
                 Logged in as @context.User.Identity.Name &nbsp;&nbsp;
-                @* <button class="btn btn-sm btn-outline-dark" @onclick="@(() => TokenProvider.SetTokenAsync(null))">Logout</button> *@
-                <button class="btn btn-sm btn-outline-dark" @onclick="@(() => AuthenticationService.LogoutAsync())">Logout</button>
+                
+                @* <button class="btn btn-sm btn-outline-dark" @onclick="@(() => AuthenticationService.LogoutAsync())">Logout</button> *@
+                
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AuthenticationService.LogoutAsync())">
+                    Logout
+                </MudButton>
             </Authorized>
             <NotAuthorized>
+                <MudSpacer />
                 <p> Not authorized</p>
             </NotAuthorized>
 

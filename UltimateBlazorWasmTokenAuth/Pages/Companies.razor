@@ -1,55 +1,83 @@
 ﻿@page "/companies"
+
 @inject TokenAuthenticationStateProvider TokenProvider
-@inject IAuthenticationService AuthenticationService;
+@inject IAuthenticationService AuthenticationService
 @inject IRepositoryManager repositoryManager
+@inject IDialogService DialogService
 
 @attribute [Authorize]
 
 <PageTitle>Companies</PageTitle>
 
-<h1>Companies</h1>
+<MudText Typo="Typo.h4">Companies</MudText>
+<br />
+<br />
+<NewCompany />
+&nbsp;
+@* <button class="btn btn-primary" @onclick="() => LoadData()">Refresh</button> *@
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenDialog">New</MudButton>
 
-<p>This component demonstrates fetching data from the server.</p>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="LoadData">Refresh</MudButton>
 
-@if (companies == null)
+<br />
+
+@if (isLoading)
 {
-    <p><em>Loading...</em></p>
+    <MudProgressCircular Color="Color.Default" Size="Size.Medium" Indeterminate="true"  />
+}
+else if (companies == null)
+{
     <p><em>@errorMessage</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                
-                <th>Id</th>
-                <th>Name</th>
-                <th>Address</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in companies)
-            {
-                <tr>
-                    <td>@forecast.Id</td>
-                    <td>@forecast.Name</td>
-                    <td>@forecast.FullAddress</td>
-                    
-                </tr>
-            }
-        </tbody>
-    </table>
+
+    <style>
+        .no-wrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .id-column {
+            width: 100px !important;
+            max-width: 100px !important;
+        }
+    </style>
+    <br />
+    <MudTable Items="companies" Dense="true" Hover="true" Striped="false" Bordered="true">
+        <HeaderContent>
+            <MudTh Class="id-column no-wrap">Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Address</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd Class="id-column no-wrap" DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Address">@context.FullAddress</MudTd>
+        </RowTemplate>
+    </MudTable>
+
 }
 
-@code {
 
+
+
+@code {
     private List<CompanyDto>? companies;
     private HttpResponseMessage? message;
-    private string errorMessage = "No Errors";
+    private string errorMessage = "";
     private bool isLoading = false;
-
+    private bool isSavingCompany = false;
+    private CompanyDto? createdCompany;
+    private string saveCompanyErrorMessage;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
     {
         isLoading = true;
 
@@ -62,46 +90,43 @@ else
                 errorMessage = $"Error occurred: {message.ReasonPhrase} (Status code: {message.StatusCode})";
                 companies = null; // Ensure UI knows to show error message
             }
-
-
         }
         catch (Exception ex)
         {
-
             errorMessage = ex.Message;
             companies = null;
         }
         finally
         {
-            isLoading = false;    
+            isLoading = false;
         }
 
-        
     }
 
 
+    private async Task OpenDialog()
+    {
+        var dialog = DialogService.Show<NewCompany>("New Company");
+        var result = await dialog.Result;
 
+        if (!result.Canceled)
+        {
+            var newCompany = (CompanyForCreationDto)result.Data;
+            try
+            {
+                isSavingCompany = true;
+                (message, createdCompany) = await repositoryManager.Company.CreateCompanyAsync(newCompany);
+               
+            }
+            catch (Exception ex)
+            {
+                saveCompanyErrorMessage = ex.Message;
+            }
+            finally
+            {
+                isLoading = false;
+            }
+        }
+    }
 
-
-
-
-
-
-
-    // private CompanyDto[]? companies;
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     var token = await TokenProvider.GetTokenAsync();
-    //     if (token != null)
-    //     {
-    //         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    //         //Http.DefaultRequestHeaders.Accept.Clear(); // Clears any existing Accept headers to ensure no conflicts
-    //         Http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); // Sets Accept header to application/json
-
-    //         companies = await Http.GetFromJsonAsync<CompanyDto[]>("https://amqms.site/api/companies");
-    //     }
-    // }
-
-    
 }

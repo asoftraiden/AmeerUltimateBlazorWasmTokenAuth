@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Pages\Companies2.razor">
+    <Content Update="Pages\Companies.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
