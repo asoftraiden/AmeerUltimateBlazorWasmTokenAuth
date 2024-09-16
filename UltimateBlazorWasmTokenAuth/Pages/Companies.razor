@@ -124,7 +124,8 @@ else
             {
                 isSavingCompany = true;
                 (message, createdCompany) = await repositoryManager.Company.CreateCompanyAsync(newCompany);
-               
+                companies.Add(createdCompany);
+
             }
             catch (Exception ex)
             {
