@@ -106,7 +106,15 @@ else
 
     private async Task OpenDialog()
     {
-        var dialog = DialogService.Show<NewCompany>("New Company");
+        var options = new DialogOptions
+            {
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true,
+                CloseButton = true,
+                //DisableBackdropClick = true,
+                NoHeader = false
+            };
+        var dialog = DialogService.Show<NewCompany>("New Company" , options);
         var result = await dialog.Result;
 
         if (!result.Canceled)
