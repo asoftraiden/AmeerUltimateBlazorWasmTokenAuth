@@ -49,7 +49,12 @@
 
 
 <style>
-    
+    .login-paper {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+    }
+
     .spin-animation {
         animation: spin 1s linear infinite;
     }
@@ -74,7 +79,7 @@
 <MudContainer Class="d-flex flex-column justify-center align-center" Style="height: 100vh;">
    
 
-    <MudPaper Elevation="3" Class="pa-8 ma-8 d-flex flex-column gap-4" Width="600px">
+    <MudPaper Elevation="3" Class="pa-8 ma-8 d-flex flex-column gap-4 login-paper" MinWidth="300px">
     <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-4">Sign In</MudText>
     <MudText Typo="Typo.h5" Align="Align.Left" Class="mb-4">To use QMS System</MudText>
 

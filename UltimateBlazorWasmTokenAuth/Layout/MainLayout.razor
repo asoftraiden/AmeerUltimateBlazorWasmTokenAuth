@@ -13,7 +13,8 @@
 
 @* Needed for snackbars *@
 <MudSnackbarProvider />
-
+<AuthorizeView>
+    <Authorized>
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
@@ -24,8 +25,7 @@
 
         <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="DarkModeToggle" />
 
-        <AuthorizeView>
-            <Authorized>
+       
                 Logged in as @context.User.Identity.Name &nbsp;&nbsp;
                 
                 @* <button class="btn btn-sm btn-outline-dark" @onclick="@(() => AuthenticationService.LogoutAsync())">Logout</button> *@
@@ -33,12 +33,7 @@
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AuthenticationService.LogoutAsync())">
                     Logout
                 </MudButton>
-            </Authorized>
-            <NotAuthorized>
-                <p> Not authorized</p>
-            </NotAuthorized>
-        </AuthorizeView>
-
+            
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -48,6 +43,12 @@
     </MudMainContent>
 </MudLayout>
 
+    </Authorized>
+    <NotAuthorized>
+       <UltimateBlazorWasmTokenAuth.Pages.Login />
+    </NotAuthorized>
+
+</AuthorizeView>
 
 
 
