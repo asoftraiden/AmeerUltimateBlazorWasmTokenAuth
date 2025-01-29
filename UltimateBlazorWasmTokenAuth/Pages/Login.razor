@@ -6,45 +6,7 @@
 
 @inject ILogger<Login> Logger
 
-@* <div class="container col-6">
-    @if (loginFailure)
-    {
-        <div class="alert alert-danger">Your credentials did not work. Please try again.</div>
-    }
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Login</h5>
-            <EditForm Model="credentials" OnValidSubmit="SubmitCredentials">
-                <DataAnnotationsValidator />
 
-                <div class="form-group">
-                    <label>Username</label>
-                    <InputText class="form-control" mb-3 @bind-Value="credentials.username" />
-                    <ValidationMessage For="@(()=> credentials.username)" />
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <InputText type="password" class="form-control" @bind-Value="credentials.password" />
-                    <ValidationMessage For="@(()=> credentials.password)" />
-                    <br />
-                </div>
-                <div class="d-flex align-items-center">
-                    <button type="submit" class="btn btn-outline-primary btn-sm">
-                        Submit
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        }
-                    </button>
-                    @if (errorMessage is not null)
-                    {
-                        <p class="text-danger ms-3 mb-0">@errorMessage</p>
-                    }
-                </div>
-            </EditForm>
-        </div>
-    </div>
-</div> *@
 
 
 
@@ -57,6 +19,22 @@
 
     .spin-animation {
         animation: spin 1s linear infinite;
+    }
+
+    .logo-container-left {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        width: 240px;
+        height: auto;
+    }
+
+    .logo-container-right {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        width: 240px;
+        height: auto;
     }
 
     /* Autocomplete style overrides */
@@ -77,51 +55,48 @@
 
 
 <MudContainer Class="d-flex flex-column justify-center align-center" Style="height: 100vh;">
-   
+
 
     <MudPaper Elevation="3" Class="pa-8 ma-8 d-flex flex-column gap-4 login-paper" MinWidth="300px">
-    <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-4">Sign In</MudText>
-    <MudText Typo="Typo.h5" Align="Align.Left" Class="mb-4">To use QMS System</MudText>
+        <img src="/logo-left.svg" alt="QM Systems Logo" class="logo-container-left" />
+        <img src="/logo-right.svg" alt="QM Systems Logo" class="logo-container-right" />
 
-    <MudForm>
-        <MudTextField 
-            @bind-Value="credentials.username"
-            Label="Username"
-            Variant="Variant.Outlined"
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Person"
-            FullWidth="true"
-            Class="mb-3"
-            AutoComplete="autocomplete-username"
-        />
-        <MudTextField 
-            @bind-Value="credentials.password"
-            Label="Password"
-            Variant="Variant.Outlined"
-            InputType="InputType.Password"
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Lock"
-            FullWidth="true"
-            Class="mb-5"
-            AutoComplete="autocomplete-current-password"
-        />
-        <MudButton 
-                Variant="Variant.Filled" 
-                Color="Color.Primary" 
-                FullWidth="true" 
-                Size="Size.Large"
-                OnClick="SubmitCredentials"
-                Class="mb-3"
-                
-                DisableElevation="true">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-4">Sign In</MudText>
+        <MudText Typo="Typo.h5" Align="Align.Left" Class="mb-4">To use QMS System</MudText>
+
+        <MudForm>
+            <MudTextField @bind-Value="credentials.username"
+                          Label="Username"
+                          Variant="Variant.Outlined"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Person"
+                          FullWidth="true"
+                          Class="mb-3"
+                          AutoComplete="autocomplete-username" />
+            <MudTextField @bind-Value="credentials.password"
+                          Label="Password"
+                          Variant="Variant.Outlined"
+                          InputType="InputType.Password"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Lock"
+                          FullWidth="true"
+                          Class="mb-5"
+                          AutoComplete="autocomplete-current-password" />
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Size="Size.Large"
+                       OnClick="SubmitCredentials"
+                       Class="mb-3"
+                       DisableElevation="true">
                 <div style="flex-grow: 1; text-align: center;">
-                     Sign In
+                    Sign In
                 </div>
                 @if (isLoading)
                 {
                     <MudProgressCircular Color="Color.Secondary" Size="Size.Small" Indeterminate="true" style="position: absolute; top: 25%; left:94%; z-index: 2;" />
                 }
-        </MudButton>
+            </MudButton>
             @if (errorMessage is not null)
             {
                 <p class="text-danger ms-3 mb-0">@errorMessage</p>
@@ -131,8 +106,8 @@
             {
                 <div class="alert alert-danger">Your credentials did not work. Please try again.</div>
             }
-    </MudForm>
-</MudPaper>
+        </MudForm>
+    </MudPaper>
 
 
 </MudContainer>
@@ -149,7 +124,7 @@
 
     async Task SubmitCredentials()
     {
-       
+
         try
         {
             isLoading = true;

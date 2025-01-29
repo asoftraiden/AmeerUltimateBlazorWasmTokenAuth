@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- Main company name -->
+  <text x="200" y="80" 
+        font-family="Arial, sans-serif" 
+        font-size="48" 
+        font-weight="bold"
+        text-anchor="middle" 
+        fill="#7e6fff">
+    QM Systems
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="200" y="120" 
+        font-family="Arial, sans-serif" 
+        font-size="20" 
+        text-anchor="middle" 
+        fill="#ffffff">
+    Quality Databases Inc.
+  </text>
+</svg>
