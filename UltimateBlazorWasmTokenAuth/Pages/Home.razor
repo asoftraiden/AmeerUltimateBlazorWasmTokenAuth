@@ -1,8 +1,129 @@
 ﻿@page "/"
 
-
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <!-- Header -->
+    <MudPaper Elevation="0" Class="pa-8 mb-4" Color="Color.Primary" Style="opacity: 0.9">
+        <MudText Typo="Typo.h2" Align="Align.Center" Color="Color.Surface" Class="mb-2">Quality Management System</MudText>
+        <MudText Typo="Typo.h6" Align="Align.Center" Color="Color.Surface">Ensuring Excellence Through Systematic Management</MudText>
+    </MudPaper>
 
-Welcome to your new app.
+    <!-- Key Metrics Grid -->
+    <MudGrid Class="mb-6">
+        <MudItem xs="12" md="6" Class="mb-4">
+            <MudPaper Class="pa-4" Elevation="2" Style="height: 100%;">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Key Metrics</MudText>
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudPaper Class="pa-4" Color="Color.Surface" Style="height: 100%;">
+                            <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Primary">98%</MudText>
+                            <MudText Align="Align.Center">Quality Score</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudPaper Class="pa-4" Color="Color.Surface" Style="height: 100%;">
+                            <MudText Typo="Typo.h4" Align="Align.Center" Color="Color.Success">95%</MudText>
+                            <MudText Align="Align.Center">Compliance Rate</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4" Elevation="2" Style="height: 100%;">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Core Functions</MudText>
+                <MudList T="string">
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                        <MudText>Document Control</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                        <MudText>Process Management</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                        <MudText>Risk Assessment</MudText>
+                    </MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Main Features Section -->
+    <MudGrid Class="mb-6">
+        <MudItem xs="12" md="4" Class="mb-4">
+            <MudCard Class="h-100">
+                <MudCardContent Class="mud-primary">
+                    <MudText Typo="Typo.h5" Class="mb-3">Document Management</MudText>
+                    <MudText Class="mt-2">
+                        Centralized control of documentation ensures consistency and compliance across the organization.
+                        Track revisions, approvals, and distribution of quality documents.
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions Class="mud-primary">
+                    <MudButton Variant="Variant.Filled" Color="Color.Surface" Class="ml-2 mb-2">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="mb-4">
+            <MudCard Class="h-100">
+                <MudCardContent Class="mud-warning">
+                    <MudText Typo="Typo.h5" Class="mb-3">Audit Management</MudText>
+                    <MudText Class="mt-2">
+                        Schedule, conduct, and track internal and external audits.
+                        Monitor findings, corrective actions, and improvement opportunities systematically.
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions Class="mud-warning">
+                    <MudButton Variant="Variant.Filled" Color="Color.Surface" Class="ml-2 mb-2">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="mb-4">
+            <MudCard Class="h-100">
+                <MudCardContent Class="mud-error">
+                    <MudText Typo="Typo.h5" Class="mb-3">Training Management</MudText>
+                    <MudText Class="mt-2">
+                        Track employee training requirements, schedule sessions, and maintain training records.
+                        Ensure workforce competency and compliance with quality standards.
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions Class="mud-error">
+                    <MudButton Variant="Variant.Filled" Color="Color.Surface" Class="ml-2 mb-2">Learn More</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Benefits Section -->
+    <MudPaper Class="pa-4 mb-6" Elevation="2">
+        <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Benefits of QMS</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="4" Class="mb-4">
+                <MudPaper Class="pa-4" Color="Color.Surface" Style="height: 100%;">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Enhanced Efficiency</MudText>
+                    <MudText>Streamlined processes and reduced waste through standardized procedures</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="mb-4">
+                <MudPaper Class="pa-4" Color="Color.Surface" Style="height: 100%;">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Better Compliance</MudText>
+                    <MudText>Ensures adherence to regulatory requirements and industry standards</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="mb-4">
+                <MudPaper Class="pa-4" Color="Color.Surface" Style="height: 100%;">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Customer Satisfaction</MudText>
+                    <MudText>Improved product quality and service delivery leading to higher satisfaction</MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Footer -->
+    <MudPaper Class="pa-8 mt-8" Color="Color.Primary" Elevation="0">
+        <MudText Align="Align.Center" Color="Color.Surface">© 2025 Quality Management System Dashboard</MudText>
+    </MudPaper>
+</MudContainer>

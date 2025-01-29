@@ -1,0 +1,122 @@
+﻿@page "/nonconforming"
+
+<MudGrid Spacing="2" Class="pa-4">
+    <MudItem xs="12">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5" Class="mb-4">Create Nonconforming Entry</MudText>
+            
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="ncNumber"
+                                Label="NC Number"
+                                Variant="Variant.Filled"
+                                Disabled />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="detectedBy"
+                                Label="Detected By"
+                                Variant="Variant.Text" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="description"
+                                Label="Description"
+                                Variant="Variant.Outlined"
+                                Lines="3" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker @bind-Date="detectionDate"
+                                 Label="Detection Date"
+                                 Variant="Variant.Outlined" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect @bind-Value="status"
+                             Label="Status"
+                             Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("Open")">Open</MudSelectItem>
+                        <MudSelectItem Value="@("In Progress")">In Progress</MudSelectItem>
+                        <MudSelectItem Value="@("Closed")">Closed</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudSelect @bind-Value="type"
+                             Label="Type"
+                             Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("Dimensional")">Dimensional</MudSelectItem>
+                        <MudSelectItem Value="@("Visual")">Visual</MudSelectItem>
+                        <MudSelectItem Value="@("Functional")">Functional</MudSelectItem>
+                        <MudSelectItem Value="@("Documentation")">Documentation</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudNumericField @bind-Value="quantityAffected"
+                                   Label="Quantity Affected"
+                                   Variant="Variant.Outlined"
+                                   Min="1" />
+                </MudItem>
+
+                <MudItem xs="12" sm="4">
+                    <MudSelect @bind-Value="partId"
+                             Label="Part"
+                             Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("451ccff4-023d-4b50-321d-08dcdf8b4841")">Part XYZ</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="4">
+                    <MudSelect @bind-Value="cellId"
+                             Label="Cell"
+                             Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("fc7874b0-0454-4812-17f2-08dcfbce5588")">Cell 1</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="4">
+                    <MudSelect @bind-Value="modelId"
+                             Label="Model"
+                             Variant="Variant.Outlined">
+                        <MudSelectItem Value="@("e92a64e6-a4ef-446b-f7fb-08dcfdd19f7c")">Model A</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="rootCause"
+                                Label="Root Cause"
+                                Variant="Variant.Outlined"
+                                Lines="2" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudCheckBox  T="bool" @bind-Checked="requiresCustomerNotification"
+                               Label="Requires Customer Notification"
+                               Color="Color.Primary" />
+                </MudItem>
+
+                <MudItem xs="12" Class="d-flex justify-end">
+                    <MudButton Variant="Variant.Text" Class="mr-2">Cancel</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary">Submit</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string ncNumber;
+    private string description;
+    private DateTime? detectionDate;
+    private string status;
+    private string type;
+    private int quantityAffected;
+    private string partId;
+    private string cellId;
+    private string modelId;
+    private string detectedBy;
+    private string rootCause;
+    private bool requiresCustomerNotification;
+}
