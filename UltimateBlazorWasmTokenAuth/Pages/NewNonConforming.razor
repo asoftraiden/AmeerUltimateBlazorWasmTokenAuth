@@ -1,122 +1,397 @@
 ﻿@page "/nonconforming"
+@inject IRepositoryManager RepositoryManager
+@inject ISnackbar Snackbar
 
-<MudGrid Spacing="2" Class="pa-4">
-    <MudItem xs="12">
-        <MudPaper Class="pa-4">
-            <MudText Typo="Typo.h5" Class="mb-4">Create Nonconforming Entry</MudText>
-            
-            <MudGrid>
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="ncNumber"
-                                Label="NC Number"
-                                Variant="Variant.Filled"
-                                Disabled />
-                </MudItem>
+<EditForm Model="@nonConforming" OnValidSubmit="Submit" novalidate>
+    <DataAnnotationsValidator />
+    <MudGrid Spacing="2" Class="pa-4">
+        <MudItem xs="12">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h5" Class="mb-4">Create Nonconforming Entry</MudText>
 
-                <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="detectedBy"
-                                Label="Detected By"
-                                Variant="Variant.Text" />
-                </MudItem>
+                @if (isLoading)
+                {
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                }
+                else
+                {
+                    <MudGrid>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="nonConforming.NcNumber"
+                                          Label="NC Number"
+                                          Variant="Variant.Text"
+                                           />
+                        </MudItem>
 
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="description"
-                                Label="Description"
-                                Variant="Variant.Outlined"
-                                Lines="3" />
-                </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="nonConforming.DetectedBy"
+                                          Label="Detected By"
+                                          For="@(() => nonConforming.DetectedBy)"
+                                          Required="true"
+                                          RequiredError="Detected By is required!"
+                                          Variant="Variant.Text" />
+                        </MudItem>
 
-                <MudItem xs="12" sm="6">
-                    <MudDatePicker @bind-Date="detectionDate"
-                                 Label="Detection Date"
-                                 Variant="Variant.Outlined" />
-                </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="nonConforming.Description"
+                                          Label="Description"
+                                          For="@(() => nonConforming.Description)"
+                                          Required="true"
+                                          RequiredError="Description is required!"
+                                          Variant="Variant.Outlined"
+                                          Lines="3" />
+                        </MudItem>
 
-                <MudItem xs="12" sm="6">
-                    <MudSelect @bind-Value="status"
-                             Label="Status"
-                             Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("Open")">Open</MudSelectItem>
-                        <MudSelectItem Value="@("In Progress")">In Progress</MudSelectItem>
-                        <MudSelectItem Value="@("Closed")">Closed</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker @bind-Date="nonConforming.DetectionDate"
+                                           Label="Detection Date"
+                                           For="@(() => nonConforming.DetectionDate)"
+                                           Required="true"
+                                           RequiredError="Detection Date is required!"
+                                           Variant="Variant.Outlined" />
+                        </MudItem>
 
-                <MudItem xs="12" sm="6">
-                    <MudSelect @bind-Value="type"
-                             Label="Type"
-                             Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("Dimensional")">Dimensional</MudSelectItem>
-                        <MudSelectItem Value="@("Visual")">Visual</MudSelectItem>
-                        <MudSelectItem Value="@("Functional")">Functional</MudSelectItem>
-                        <MudSelectItem Value="@("Documentation")">Documentation</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="nonConforming.Status"
+                                       Label="Status"
+                                       For="@(() => nonConforming.Status)"
+                                       Required="true"
+                                       RequiredError="Status is required!"
+                                       Variant="Variant.Outlined">
+                                <MudSelectItem Value="@("Open")">Open</MudSelectItem>
+                                <MudSelectItem Value="@("In Progress")">In Progress</MudSelectItem>
+                                <MudSelectItem Value="@("Closed")">Closed</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
 
-                <MudItem xs="12" sm="6">
-                    <MudNumericField @bind-Value="quantityAffected"
-                                   Label="Quantity Affected"
-                                   Variant="Variant.Outlined"
-                                   Min="1" />
-                </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudSelect @bind-Value="nonConforming.Type"
+                                       Label="Type"
+                                       For="@(() => nonConforming.Type)"
+                                       Required="true"
+                                       RequiredError="Type is required!"
+                                       Variant="Variant.Outlined">
+                                <MudSelectItem Value="@("Dimensional")">Dimensional</MudSelectItem>
+                                <MudSelectItem Value="@("Visual")">Visual</MudSelectItem>
+                                <MudSelectItem Value="@("Functional")">Functional</MudSelectItem>
+                                <MudSelectItem Value="@("Documentation")">Documentation</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
 
-                <MudItem xs="12" sm="4">
-                    <MudSelect @bind-Value="partId"
-                             Label="Part"
-                             Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("451ccff4-023d-4b50-321d-08dcdf8b4841")">Part XYZ</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudNumericField @bind-Value="nonConforming.QuantityAffected"
+                                             Label="Quantity Affected"
+                                             For="@(() => nonConforming.QuantityAffected)"
+                                             Required="true"
+                                             RequiredError="Quantity Affected is required!"
+                                             Variant="Variant.Outlined"
+                                             Min="1" />
+                        </MudItem>
 
-                <MudItem xs="12" sm="4">
-                    <MudSelect @bind-Value="cellId"
-                             Label="Cell"
-                             Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("fc7874b0-0454-4812-17f2-08dcfbce5588")">Cell 1</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudAutocomplete T="PartDto"
+                                             Label="Part"
+                                             ValueChanged="@(Part => OnPartSelected(Part))" 
+                                             SearchFunc="@SearchParts"
+                                             ToStringFunc="@(part => part?.PartNumber ?? string.Empty)"
+                                             Margin="Margin.Normal"
+                                             Required="true"
+                                             RequiredError="Part is required!"
+                                             AdornmentIcon="@Icons.Material.Filled.Search"
+                                             AdornmentColor="Color.Primary"
+                                             Adornment="Adornment.End">
+                                <ItemTemplate Context="part">
+                                    <MudText>@part.PartNumber - @part.Description</MudText>
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
 
-                <MudItem xs="12" sm="4">
-                    <MudSelect @bind-Value="modelId"
-                             Label="Model"
-                             Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("e92a64e6-a4ef-446b-f7fb-08dcfdd19f7c")">Model A</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudAutocomplete T="CellDto"
+                                             Label="Cell"
+                                             ValueChanged="@(Cell => OnCellSelected(Cell))"
+                                             SearchFunc="@SearchCells"
+                                             ToStringFunc="@(cell => cell?.Description ?? string.Empty)"
+                                             Margin="Margin.Normal"
+                                             Required="true"
+                                             RequiredError="Cell is required!"
+                                             AdornmentIcon="@Icons.Material.Filled.Search"
+                                             AdornmentColor="Color.Primary"
+                                             Adornment="Adornment.End">
+                                <ItemTemplate Context="cell">
+                                    <MudText>@cell.Description</MudText>
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
 
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="rootCause"
-                                Label="Root Cause"
-                                Variant="Variant.Outlined"
-                                Lines="2" />
-                </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudAutocomplete T="ModelDto"
+                                             Label="Model"
+                                             ValueChanged="@(Model => OnModelSelected(Model))"
+                                             SearchFunc="@SearchModels"
+                                             ToStringFunc="@(model => model?.Description ?? string.Empty)"
+                                             Margin="Margin.Normal"
+                                             Required="true"
+                                             RequiredError="Model is required!"
+                                             AdornmentIcon="@Icons.Material.Filled.Search"
+                                             AdornmentColor="Color.Primary"
+                                             Adornment="Adornment.End">
+                                <ItemTemplate Context="model">
+                                    <MudText>@model.Description</MudText>
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
 
-                <MudItem xs="12">
-                    <MudCheckBox  T="bool" @bind-Checked="requiresCustomerNotification"
-                               Label="Requires Customer Notification"
-                               Color="Color.Primary" />
-                </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="nonConforming.RootCause"
+                                          Label="Root Cause"
+                                          For="@(() => nonConforming.RootCause)"
+                                          Required="true"
+                                          RequiredError="Root Cause is required!"
+                                          Variant="Variant.Outlined"
+                                          Lines="2" />
+                        </MudItem>
 
-                <MudItem xs="12" Class="d-flex justify-end">
-                    <MudButton Variant="Variant.Text" Class="mr-2">Cancel</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary">Submit</MudButton>
-                </MudItem>
-            </MudGrid>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+                        <MudItem xs="12">
+                            <MudCheckBox @bind-Value="nonConforming.RequiresCustomerNotification"
+                                         Label="Requires Customer Notification"
+                                         Color="Color.Primary" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="d-flex justify-end">
+                            <MudButton Variant="Variant.Text"
+                                       Class="mr-2"
+                                       OnClick="Reset"
+                                       Disabled="@isLoading">Reset</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Processing</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>Submit</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
-    private string ncNumber;
-    private string description;
-    private DateTime? detectionDate;
-    private string status;
-    private string type;
-    private int quantityAffected;
-    private string partId;
-    private string cellId;
-    private string modelId;
-    private string detectedBy;
-    private string rootCause;
-    private bool requiresCustomerNotification;
+    private NonConformingForCreationDto nonConforming = new()
+        {
+            Status = "Open",
+            DetectionDate = DateTime.Now,
+           
+        };
+    private bool isLoading;
+
+    
+    private Timer _debouncePartsTimer;
+    private Timer _debounceCellsTimer;
+    private Timer _debounceModelsTimer;
+
+    private const int DebounceDelay = 300; // 300ms delay
+
+
+    private void OnPartSelected(PartDto selectedPart)
+    {
+        nonConforming.PartId = selectedPart.Id;  // Assuming your DTO has PartId property
+    }
+    private void OnCellSelected(CellDto selectedCell)
+    {
+        nonConforming.CellId = selectedCell.Id;  // Assuming your DTO has PartId property
+    }
+    private void OnModelSelected(ModelDto selectedModel)
+    {
+        nonConforming.ModelId = selectedModel.Id;  // Assuming your DTO has PartId property
+    }
+
+
+    private async Task Submit()
+    {
+        try
+        {
+            isLoading = true;
+
+            var (response, createdNonConforming, errors) = await RepositoryManager.NonConforming
+                .CreateNonConformingAsync(nonConforming);
+
+            if (response.IsSuccessStatusCode && createdNonConforming != null)
+            {
+                Snackbar.Add("Nonconforming entry created successfully!", Severity.Success);
+                // Reset form or navigate away
+                nonConforming = new()
+                    {
+                        Status = "Open",
+                        DetectionDate = DateTime.Now,
+                        
+                    };
+            }
+            else
+            {
+                if (errors != null && errors.Any())
+                {
+                    foreach (var error in errors)
+                    {
+                        Snackbar.Add($"{error.Key}: {error.Value}", Severity.Error);
+                    }
+                }
+                else
+                {
+                    Snackbar.Add("Failed to create nonconforming entry. Please try again.", Severity.Error);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Reset()
+    {
+        // Add navigation logic here if needed
+        nonConforming = new()
+            {
+                Status = "Open",
+                DetectionDate = DateTime.Now,
+                
+            };
+    }
+
+    private async Task<IEnumerable<PartDto>> SearchParts(string searchTerm, CancellationToken cancellationToken)
+    {
+        return await DebouncedSearchParts(searchTerm);
+    }
+
+    private async Task<IEnumerable<PartDto>> DebouncedSearchParts(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return new List<PartDto>();
+
+        var tcs = new TaskCompletionSource<IEnumerable<PartDto>>();
+
+        _debouncePartsTimer?.Dispose();
+        _debouncePartsTimer = new Timer(async _ =>
+        {
+            try
+            {
+                var (response, parts, _) = await RepositoryManager.Part.GetPartsAsync(1, 10, searchTerm);
+                if (response.IsSuccessStatusCode && parts != null)
+                {
+                    tcs.SetResult(parts);
+                }
+                else
+                {
+                    await InvokeAsync(() => Snackbar.Add("Failed to search parts. Please try again.", Severity.Error));
+                    tcs.SetResult(new List<PartDto>());
+                }
+            }
+            catch (Exception ex)
+            {
+                await InvokeAsync(() => Snackbar.Add($"Error searching users: {ex.Message}", Severity.Error));
+                tcs.SetResult(new List<PartDto>());
+            }
+        }, null, DebounceDelay, Timeout.Infinite);
+
+        return await tcs.Task;
+
+
+    }
+
+    private async Task<IEnumerable<CellDto>> SearchCells(string searchTerm, CancellationToken cancellationToken)
+    {
+        return await DebouncedSearchCells(searchTerm);
+    }
+
+    private async Task<IEnumerable<CellDto>> DebouncedSearchCells(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return new List<CellDto>();
+
+        var tcs = new TaskCompletionSource<IEnumerable<CellDto>>();
+
+        _debounceCellsTimer?.Dispose();
+        _debounceCellsTimer = new Timer(async _ =>
+        {
+            try
+            {
+                var (response, cells, _) = await RepositoryManager.Cell.GetCellsAsync(1, 10, searchTerm);
+                if (response.IsSuccessStatusCode && cells != null)
+                {
+                    tcs.SetResult(cells);
+                }
+                else
+                {
+                    await InvokeAsync(() => Snackbar.Add("Failed to search cells. Please try again.", Severity.Error));
+                    tcs.SetResult(new List<CellDto>());
+                }
+            }
+            catch (Exception ex)
+            {
+                await InvokeAsync(() => Snackbar.Add($"Error searching cells: {ex.Message}", Severity.Error));
+                tcs.SetResult(new List<CellDto>());
+            }
+        }, null, DebounceDelay, Timeout.Infinite);
+
+        return await tcs.Task;
+    }
+
+    private async Task<IEnumerable<ModelDto>> SearchModels(string searchTerm, CancellationToken cancellationToken)
+    {
+        return await DebouncedSearchModels(searchTerm);
+    }
+
+    private async Task<IEnumerable<ModelDto>> DebouncedSearchModels(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return new List<ModelDto>();
+
+        var tcs = new TaskCompletionSource<IEnumerable<ModelDto>>();
+
+        _debounceModelsTimer?.Dispose();
+        _debounceModelsTimer = new Timer(async _ =>
+        {
+            try
+            {
+                var (response, models, _) = await RepositoryManager.Model.GetModelsAsync(1, 10, searchTerm);
+                if (response.IsSuccessStatusCode && models != null)
+                {
+                    tcs.SetResult(models);
+                }
+                else
+                {
+                    await InvokeAsync(() => Snackbar.Add("Failed to search models. Please try again.", Severity.Error));
+                    tcs.SetResult(new List<ModelDto>());
+                }
+            }
+            catch (Exception ex)
+            {
+                await InvokeAsync(() => Snackbar.Add($"Error searching models: {ex.Message}", Severity.Error));
+                tcs.SetResult(new List<ModelDto>());
+            }
+        }, null, DebounceDelay, Timeout.Infinite);
+
+        return await tcs.Task;
+    }
+
+    public void Dispose()
+    {
+        _debouncePartsTimer?.Dispose();
+        _debounceCellsTimer?.Dispose();
+        _debounceModelsTimer?.Dispose();
+    }
 }
