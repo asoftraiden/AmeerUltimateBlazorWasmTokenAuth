@@ -2,189 +2,217 @@
 @inject IRepositoryManager RepositoryManager
 @inject ISnackbar Snackbar
 
-<EditForm Model="@nonConforming" OnValidSubmit="Submit" novalidate>
-    <DataAnnotationsValidator />
-    <MudGrid Spacing="2" Class="pa-4">
-        <MudItem xs="12">
-            <MudPaper Class="pa-4">
-                <MudText Typo="Typo.h5" Class="mb-4">Create Nonconforming Entry</MudText>
 
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <EditForm Model="@nonConforming" OnValidSubmit="Submit" novalidate>
+        <DataAnnotationsValidator />
+
+        <MudCard Elevation="4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5">Create Nonconforming Entry</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+
+            <MudCardContent>
                 @if (isLoading)
                 {
-                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="d-flex mx-auto my-4" />
                 }
                 else
                 {
-                    <MudGrid>
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="nonConforming.NcNumber"
-                                          Label="NC Number"
-                                          Variant="Variant.Text"
-                                           />
-                        </MudItem>
-
-                        <MudItem xs="12" sm="6">
-                            <MudTextField @bind-Value="nonConforming.DetectedBy"
-                                          Label="Detected By"
-                                          For="@(() => nonConforming.DetectedBy)"
-                                          Required="true"
-                                          RequiredError="Detected By is required!"
-                                          Variant="Variant.Text" />
-                        </MudItem>
-
+                    <MudGrid Spacing="3">
+                        <!-- Basic Information Section -->
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="nonConforming.Description"
-                                          Label="Description"
-                                          For="@(() => nonConforming.Description)"
-                                          Required="true"
-                                          RequiredError="Description is required!"
-                                          Variant="Variant.Outlined"
-                                          Lines="3" />
+                            <MudPaper Elevation="0" Class="pa-4 mud-background-gray">
+                                <MudText Typo="Typo.subtitle1" Class="mb-4">Basic Information</MudText>
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6">
+                                        <MudTextField @bind-Value="nonConforming.DetectedBy"
+                                                      Label="Detected By"
+                                                      For="@(() => nonConforming.DetectedBy)"
+                                                      Required="true"
+                                                      RequiredError="Detected By is required!"
+                                                      Variant="Variant.Outlined" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudDatePicker @bind-Date="nonConforming.DetectionDate"
+                                                       Label="Detection Date"
+                                                       For="@(() => nonConforming.DetectionDate)"
+                                                       Required="true"
+                                                       RequiredError="Detection Date is required!"
+                                                       Variant="Variant.Outlined" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
                         </MudItem>
 
-                        <MudItem xs="12" sm="6">
-                            <MudDatePicker @bind-Date="nonConforming.DetectionDate"
-                                           Label="Detection Date"
-                                           For="@(() => nonConforming.DetectionDate)"
-                                           Required="true"
-                                           RequiredError="Detection Date is required!"
-                                           Variant="Variant.Outlined" />
-                        </MudItem>
-
-                        <MudItem xs="12" sm="6">
-                            <MudSelect @bind-Value="nonConforming.Status"
-                                       Label="Status"
-                                       For="@(() => nonConforming.Status)"
-                                       Required="true"
-                                       RequiredError="Status is required!"
-                                       Variant="Variant.Outlined">
-                                <MudSelectItem Value="@("Open")">Open</MudSelectItem>
-                                <MudSelectItem Value="@("In Progress")">In Progress</MudSelectItem>
-                                <MudSelectItem Value="@("Closed")">Closed</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
-
-                        <MudItem xs="12" sm="6">
-                            <MudSelect @bind-Value="nonConforming.Type"
-                                       Label="Type"
-                                       For="@(() => nonConforming.Type)"
-                                       Required="true"
-                                       RequiredError="Type is required!"
-                                       Variant="Variant.Outlined">
-                                <MudSelectItem Value="@("Dimensional")">Dimensional</MudSelectItem>
-                                <MudSelectItem Value="@("Visual")">Visual</MudSelectItem>
-                                <MudSelectItem Value="@("Functional")">Functional</MudSelectItem>
-                                <MudSelectItem Value="@("Documentation")">Documentation</MudSelectItem>
-                            </MudSelect>
-                        </MudItem>
-
-                        <MudItem xs="12" sm="6">
-                            <MudNumericField @bind-Value="nonConforming.QuantityAffected"
-                                             Label="Quantity Affected"
-                                             For="@(() => nonConforming.QuantityAffected)"
-                                             Required="true"
-                                             RequiredError="Quantity Affected is required!"
-                                             Variant="Variant.Outlined"
-                                             Min="1" />
-                        </MudItem>
-
-                        <MudItem xs="12" sm="4">
-                            <MudAutocomplete T="PartDto"
-                                             Label="Part"
-                                             ValueChanged="@(Part => OnPartSelected(Part))" 
-                                             SearchFunc="@SearchParts"
-                                             ToStringFunc="@(part => part?.PartNumber ?? string.Empty)"
-                                             Margin="Margin.Normal"
-                                             Required="true"
-                                             RequiredError="Part is required!"
-                                             AdornmentIcon="@Icons.Material.Filled.Search"
-                                             AdornmentColor="Color.Primary"
-                                             Adornment="Adornment.End">
-                                <ItemTemplate Context="part">
-                                    <MudText>@part.PartNumber - @part.Description</MudText>
-                                </ItemTemplate>
-                            </MudAutocomplete>
-                        </MudItem>
-
-                        <MudItem xs="12" sm="4">
-                            <MudAutocomplete T="CellDto"
-                                             Label="Cell"
-                                             ValueChanged="@(Cell => OnCellSelected(Cell))"
-                                             SearchFunc="@SearchCells"
-                                             ToStringFunc="@(cell => cell?.Description ?? string.Empty)"
-                                             Margin="Margin.Normal"
-                                             Required="true"
-                                             RequiredError="Cell is required!"
-                                             AdornmentIcon="@Icons.Material.Filled.Search"
-                                             AdornmentColor="Color.Primary"
-                                             Adornment="Adornment.End">
-                                <ItemTemplate Context="cell">
-                                    <MudText>@cell.Description</MudText>
-                                </ItemTemplate>
-                            </MudAutocomplete>
-                        </MudItem>
-
-                        <MudItem xs="12" sm="4">
-                            <MudAutocomplete T="ModelDto"
-                                             Label="Model"
-                                             ValueChanged="@(Model => OnModelSelected(Model))"
-                                             SearchFunc="@SearchModels"
-                                             ToStringFunc="@(model => model?.Description ?? string.Empty)"
-                                             Margin="Margin.Normal"
-                                             Required="true"
-                                             RequiredError="Model is required!"
-                                             AdornmentIcon="@Icons.Material.Filled.Search"
-                                             AdornmentColor="Color.Primary"
-                                             Adornment="Adornment.End">
-                                <ItemTemplate Context="model">
-                                    <MudText>@model.Description</MudText>
-                                </ItemTemplate>
-                            </MudAutocomplete>
-                        </MudItem>
-
+                        <!-- Issue Details Section -->
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="nonConforming.RootCause"
-                                          Label="Root Cause"
-                                          For="@(() => nonConforming.RootCause)"
-                                          Required="true"
-                                          RequiredError="Root Cause is required!"
-                                          Variant="Variant.Outlined"
-                                          Lines="2" />
+                            <MudPaper Elevation="0" Class="pa-4">
+                                <MudText Typo="Typo.subtitle1" Class="mb-4">Issue Details</MudText>
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="nonConforming.Description"
+                                                      Label="Description"
+                                                      For="@(() => nonConforming.Description)"
+                                                      Required="true"
+                                                      RequiredError="Description is required!"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3" />
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect @bind-Value="nonConforming.Status"
+                                                   Label="Status"
+                                                   For="@(() => nonConforming.Status)"
+                                                   Required="true"
+                                                   RequiredError="Status is required!"
+                                                   Variant="Variant.Outlined">
+                                            <MudSelectItem Value="@("Open")">Open</MudSelectItem>
+                                            <MudSelectItem Value="@("In Progress")">In Progress</MudSelectItem>
+                                            <MudSelectItem Value="@("Closed")">Closed</MudSelectItem>
+                                        </MudSelect>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect @bind-Value="nonConforming.Type"
+                                                   Label="Type"
+                                                   For="@(() => nonConforming.Type)"
+                                                   Required="true"
+                                                   RequiredError="Type is required!"
+                                                   Variant="Variant.Outlined">
+                                            <MudSelectItem Value="@("Dimensional")">Dimensional</MudSelectItem>
+                                            <MudSelectItem Value="@("Visual")">Visual</MudSelectItem>
+                                            <MudSelectItem Value="@("Functional")">Functional</MudSelectItem>
+                                            <MudSelectItem Value="@("Documentation")">Documentation</MudSelectItem>
+                                        </MudSelect>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
                         </MudItem>
 
+                        <!-- Product Information Section -->
                         <MudItem xs="12">
-                            <MudCheckBox @bind-Value="nonConforming.RequiresCustomerNotification"
-                                         Label="Requires Customer Notification"
-                                         Color="Color.Primary" />
+                            <MudPaper Elevation="0" Class="pa-4 mud-background-gray">
+                                <MudText Typo="Typo.subtitle1" Class="mb-4">Product Information</MudText>
+                                <MudGrid>
+                                    <MudItem xs="12" sm="4">
+                                        <MudAutocomplete T="PartDto"
+                                                         Label="Part"
+                                                         ValueChanged="@(Part => OnPartSelected(Part))"
+                                                         SearchFunc="@SearchParts"
+                                                         ToStringFunc="@(part => part?.PartNumber ?? string.Empty)"
+                                                         Required="true"
+                                                         RequiredError="Part is required!"
+                                                         Variant="Variant.Outlined"
+                                                         AdornmentIcon="@Icons.Material.Filled.Search"
+                                                         AdornmentColor="Color.Primary">
+                                            <ItemTemplate Context="part">
+                                                <MudText>@part.PartNumber - @part.Description</MudText>
+                                            </ItemTemplate>
+                                        </MudAutocomplete>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="4">
+                                        <MudAutocomplete T="CellDto"
+                                                         Label="Cell"
+                                                         ValueChanged="@(Cell => OnCellSelected(Cell))"
+                                                         SearchFunc="@SearchCells"
+                                                         ToStringFunc="@(cell => cell?.Description ?? string.Empty)"
+                                                         Required="true"
+                                                         RequiredError="Cell is required!"
+                                                         Variant="Variant.Outlined"
+                                                         AdornmentIcon="@Icons.Material.Filled.Search"
+                                                         AdornmentColor="Color.Primary">
+                                            <ItemTemplate Context="cell">
+                                                <MudText>@cell.Description</MudText>
+                                            </ItemTemplate>
+                                        </MudAutocomplete>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="4">
+                                        <MudAutocomplete T="ModelDto"
+                                                         Label="Model"
+                                                         ValueChanged="@(Model => OnModelSelected(Model))"
+                                                         SearchFunc="@SearchModels"
+                                                         ToStringFunc="@(model => model?.Description ?? string.Empty)"
+                                                         Required="true"
+                                                         RequiredError="Model is required!"
+                                                         Variant="Variant.Outlined"
+                                                         AdornmentIcon="@Icons.Material.Filled.Search"
+                                                         AdornmentColor="Color.Primary">
+                                            <ItemTemplate Context="model">
+                                                <MudText>@model.Description</MudText>
+                                            </ItemTemplate>
+                                        </MudAutocomplete>
+                                    </MudItem>
+
+                                    <MudItem xs="12" sm="4">
+                                        <MudNumericField @bind-Value="nonConforming.QuantityAffected"
+                                                         Label="Quantity Affected"
+                                                         For="@(() => nonConforming.QuantityAffected)"
+                                                         Required="true"
+                                                         RequiredError="Quantity Affected is required!"
+                                                         Variant="Variant.Outlined"
+                                                         Min="1" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
                         </MudItem>
 
-                        <MudItem xs="12" Class="d-flex justify-end">
-                            <MudButton Variant="Variant.Text"
-                                       Class="mr-2"
-                                       OnClick="Reset"
-                                       Disabled="@isLoading">Reset</MudButton>
-                            <MudButton ButtonType="ButtonType.Submit"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Disabled="@isLoading">
-                                @if (isLoading)
-                                {
-                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                                    <MudText Class="ms-2">Processing</MudText>
-                                }
-                                else
-                                {
-                                    <MudText>Submit</MudText>
-                                }
-                            </MudButton>
+                        <!-- Analysis Section -->
+                        <MudItem xs="12">
+                            <MudPaper Elevation="0" Class="pa-4">
+                                <MudText Typo="Typo.subtitle1" Class="mb-4">Analysis</MudText>
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudTextField @bind-Value="nonConforming.RootCause"
+                                                      Label="Root Cause"
+                                                      For="@(() => nonConforming.RootCause)"
+                                                      Required="true"
+                                                      RequiredError="Root Cause is required!"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="2" />
+                                    </MudItem>
+
+                                    <MudItem xs="12">
+                                        <MudCheckBox @bind-Value="nonConforming.RequiresCustomerNotification"
+                                                     Label="Requires Customer Notification"
+                                                     Color="Color.Primary"
+                                                     Class="ml-n2" />
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
                         </MudItem>
                     </MudGrid>
                 }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</EditForm>
+            </MudCardContent>
 
+            <MudCardActions Class="pa-4 justify-end">
+                <MudButton Variant="Variant.Text"
+                           Class="mr-2"
+                           OnClick="Reset"
+                           Disabled="@isLoading">Reset</MudButton>
+                <MudButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Processing</MudText>
+                    }
+                    else
+                    {
+                        <MudText>Submit</MudText>
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudContainer>
 @code {
     private NonConformingForCreationDto nonConforming = new()
         {
