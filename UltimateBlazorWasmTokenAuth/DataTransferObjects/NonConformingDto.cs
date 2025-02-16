@@ -8,9 +8,9 @@ public record NonConformingDto(
     string Status,
     string Type,
     int QuantityAffected,
-    Guid PartId,
-    Guid CellId,
-    Guid ModelId,
+    Guid? PartId,
+    Guid? CellId,
+    Guid? ModelId,
     string DetectedBy,
     string RootCause,
     bool RequiresCustomerNotification
